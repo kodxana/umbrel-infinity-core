@@ -1,0 +1,59 @@
+# Unofficial Roon Server integration for umbrelOS.
+# Upstream: https://github.com/RoonLabs/roon-docker
+# The "roon" service is headless; the "portal" is only an information page.
+services:
+  app_proxy:
+    environment:
+      APP_HOST: localmedia-roon-server_portal_1
+      APP_PORT: 8080
+      PROXY_AUTH_ADD: "false"
+
+  roon:
+    image: ghcr.io/roonlabs/roonserver:latest
+    restart: unless-stopped
+    stop_grace_period: 2m
+
+    # Mandatory for Roon Remote, RAAT, and multicast discovery.
+    network_mode: host
+
+    environment:
+      TZ: Europe/Warsaw
+      ROON_INSTALL_BRANCH: production
+
+    volumes:
+      # Roon state and binaries are separate from Infinity Core.
+      # Keep on SSD-backed Umbrel app storage.
+      - ${APP_DATA_DIR}/data/roon:/Roon:rw
+      - ${APP_DATA_DIR}/data/backups:/RoonBackups:rw
+
+      # The user-selected Music folder is mounted at /Music:ro using
+      # Umbrel's native folderAccess setting in umbrel-app.yml.
+      # Local ALSA / direct USB DAC playback.
+      - /dev/snd:/dev/snd:rw
+
+    device_cgroup_rules:
+      - 'c 116:* rwm'
+
+    # Same tested workaround as Infinity Core on this host: without it,
+    # Docker masks /proc/asound and ALSA may not enumerate the TEAC.
+    # CAUTION: this unmasking reduces the container's system-path isolation.
+    # It is NOT privileged mode and does not mount the entire /dev or USB bus.
+    security_opt:
+      - systempaths=unconfined
+
+  # Roon Server itself has NO web interface. This small informational page
+  # makes Umbrel's app icon useful instead of linking to a dead port.
+  portal:
+    image: busybox:1.37
+    restart: unless-stopped
+    user: "1000:1000"
+    read_only: true
+    command:
+      - httpd
+      - -f
+      - -p
+      - "8080"
+      - -h
+      - /www
+    volumes:
+      - ${APP_DATA_DIR}/index.html:/www/index.html:ro
