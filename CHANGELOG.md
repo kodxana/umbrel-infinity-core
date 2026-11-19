@@ -1,66 +1,23 @@
 # Changelog
 
-## Roon Server — Umbrel app 1.0.0
+## Roon Server — Umbrel integration 1.0.1
 
-- Added a separate Roon Server app to the **Local Audio Apps** store.
-- Uses Roon Labs' official `ghcr.io/roonlabs/roonserver:latest` image,
-  host networking and the production channel.
-- Persists Roon state, separates scheduled backups, and lets Umbrel users
-  select a shared music folder read-only.
-- Provides ALSA access to the MINISFORUM's USB DAC with the existing
-  /proc/asound compatibility workaround; avoids privileged mode.
-- Includes a lightweight Umbrel landing page that points users to Roon Remote.
-- Existing Infinity Core app, data, and version are unchanged.
+- Published a separate Roon Server app using the official upstream container image.
+- Added independent persistent app data and backup mounts.
+- Added a read-only music-folder selection, host networking, ALSA access and a setup information page.
+- Generalized the sample configuration and documentation for public distribution.
 
-## 14.0-beta13-umbrel.7 — 2026-11-19
+## Infinity Core — Umbrel integration 14.0-beta13-umbrel.8
 
-- Updated the Umbrel app version to track upstream **Infinity Core 14.0-beta13**.
-- Documented upstream device sharing, shared-output ownership, mobile improvements,
-  wider window layout, and Linux/Home Assistant duplicate-output playback fix.
-- Retained the moving official Docker `:beta` image; Umbrel pulls it on update.
-- No changes to the proven host network, ALSA sysfs/proc visibility workaround,
-  USB bus passthrough, selected music folder or read/write sync permissions.
-- Documented the need to finish transfers and back up persistent data before
-  any image update; upstream did not claim a fix for the blank device selector.
+- Aligned the community package with upstream Infinity Core 14.0-beta13.
+- Kept USB, ALSA, host networking and writable music-folder support.
+- Generalized the timezone default and removed environment-specific descriptions.
+- Preserved the original upstream icon.
 
-## 14.0-beta12-umbrel.6
+## Previous compatibility changes
 
-- Added `security_opt: [systempaths=unconfined]` to make ALSA's
-  `/proc/asound/cards` visible in Docker without bind-mounting into `/proc`.
-- Kept `privileged: true` disabled, USB/ALSA device nodes, host networking,
-  and the writable music library.
-- Documented the security trade-off: this exposes other normally masked
-  system paths too, and remains unverified on the target hardware.
-- Included a disposable Docker test and a rollback path.
-
-## 14.0-beta12-umbrel.5
-
-- **Hotfix:** removed unsupported `/proc/asound` bind mount from revision 4.
-- Restored compatibility with Docker/runc procfs mount-safety checks on Umbrel.
-- Retained USB and ALSA device-node access, host networking and music RW mounts.
-- DAC enumeration remains under investigation; no unverified runtime workaround applied.
-
-## 14.0-beta12-umbrel.4
-
-- Exposed host ALSA inventory as a read-only `/proc/asound:/proc/asound:ro` bind mount.
-- Fixed missing `/proc/asound/cards` inside Docker, which can block USB DAC enumeration.
-- Kept the existing USB and ALSA device cgroup rules, host networking and writable music folder.
-- Separated USB DAC discovery troubleshooting from LAN multicast discovery.
-
-## 14.0-beta12-umbrel.3
-
-- Added raw USB bus and ALSA device access, including hot-plug support.
-- Scoped device cgroup rules to Linux majors 116 (sound) and 189 (USB).
-- Kept privileged mode off and avoided exposing host block devices.
-- Documented USB DAC usage and access verification via SSH.
-- Retained writable music sync, native folder picker and official icon.
-
-## 14.0-beta12-umbrel.2
-
-- Added native umbrelOS 2.x folder access entry for a selectable `/music` library.
-- Enabled read/write storage at both the Compose and folder-access layer.
-- Verified the icon URL corresponds to the original upstream project artwork.
-- Added editable environment options, separate application-state storage,
-  implementation notes, and sync-specific safeguards.
-- Preserved the original app ID `localmedia-infinity-core` and store ID
-  `localmedia` to support upgrades from the previous package.
+- Added native Umbrel music-folder selection and writable sync support.
+- Added Linux ALSA and USB device-node access with device-specific cgroup rules.
+- Reverted a direct `/proc/asound` bind mount because modern runc blocks mounting into procfs.
+- Enabled the documented Docker `systempaths=unconfined` option for ALSA card enumeration; this broadens the container's system-path visibility.
+- Kept application state separate from the selected music folder.
