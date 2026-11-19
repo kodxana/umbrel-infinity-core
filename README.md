@@ -1,246 +1,82 @@
 # Local Audio Apps for umbrelOS
 
-**Unofficial Community App Store integrations** for two proprietary music
-servers using their vendors' own official Docker images:
+An **unofficial community app store** that provides Umbrel integrations for music servers using upstream-provided container images. The repository contains packaging and documentation, not proprietary application binaries.
 
-- **Infinity Core (Beta)** — Anantar Ultimate / tekChansin, with music
-  synchronization, Infinity Link and direct ALSA DAC playback.
-- **Roon Server** — Roon Labs, with a headless library engine, Roon Remote
-  control and RAAT / Roon Ready output support.
+## Available applications
 
-The two applications are separate and can be installed independently.
-Both can access the same music files: Infinity Core has read/write access for
-sync, while Roon's mount defaults to read-only to protect the shared library.
-Neither application is redistributed or modified by this repository.
+| App | App ID | Upstream image | Interface |
+| --- | --- | --- | --- |
+| Infinity Core (Beta) | `localmedia-infinity-core` | `ghcr.io/tekchansin/infinity-core:beta` | Web UI on port 8930 |
+| Roon Server | `localmedia-roon-server` | `ghcr.io/roonlabs/roonserver:latest` | Roon Remote; dashboard tile opens an information page |
 
-## Available apps
+The apps install independently, each with its own persistent state. They can read the same music library when the appropriate storage folder is selected in Umbrel.
 
-| App ID | Server image | Open from Umbrel |
-| --- | --- | --- |
-| `localmedia-infinity-core` | `ghcr.io/tekchansin/infinity-core:beta` | Infinity Core web UI :8930 |
-| `localmedia-roon-server` | `ghcr.io/roonlabs/roonserver:latest` | Informational page :8998; use Roon Remote to control |
+## Installation
 
-The Roon Server app uses its official [Docker image](https://github.com/RoonLabs/roon-docker)
-and authentic [Roon Labs icon](https://github.com/RoonLabs/roon-docker/blob/main/configurator/public/roon-moon.svg).
-It has an independent persistent database (`/Roon`) and backup directory
-(`/RoonBackups`) plus native read-only Music folder selection in Umbrel.
-The Umbrel tile opens a lightweight setup guide; Roon has no browser music UI.
-See [Roon Server setup instructions](localmedia-roon-server/README.md).
+1. Add this repository in **Umbrel → App Store → Community App Stores** using its GitHub repository URL.
+2. Open **Local Audio Apps** and install the desired application.
+3. Select a music folder from Umbrel's storage picker.
+4. Use the app-specific setup instructions below to finish configuration.
 
-## Infinity Core
+## Infinity Core (Beta)
 
-### Features
+- **Playback:** local ALSA sound devices, Infinity Link, and compatible network renderers.
+- **Network:** host networking for local device discovery.
+- **Music:** a selected music folder appears inside the container at `/music`, with **read/write** access for music transfers and optional metadata editing.
+- **Persistent state:** `/data`.
+- **Browser:** open `http://<server-ip>:8930` and use the pairing code supplied in the container logs.
+- **Timezone:** defaults to UTC in the published template; change `TZ` in Umbrel app settings for the deployment.
 
-- The **real Infinity Core project icon** is referenced directly from the
-  developer's [official Home Assistant repository](https://github.com/tekchansin/Infinity-Homeassistant/blob/main/infinity_beta/icon.png).
-  It is not AI-generated or replaced with an imitation.
-- **Music library is read/write** (`/music:rw` and `folderAccess.readOnly: false`)
-  for music sync and optional metadata/tag changes.
-- **Native umbrelOS 2.x folder picker** for the music library.
-- Persistent `/data` separate from music, with host networking for local device
-  discovery (iBasso Infinity Link, AirPlay, Google Cast, UPnP).
-- Editable `INFINITY_NAME` and `TZ` from Umbrel app settings.
-- Direct ALSA audio and raw USB bus access, including hot-plugged compatible devices.
+### USB audio on Linux
 
-## Current upstream version and updates
+The package mounts `/dev/snd` and `/dev/bus/usb` and permits device character majors 116 (ALSA) and 189 (USB bus). Docker normally masks `/proc/asound`, so the Compose definition enables `security_opt: systempaths=unconfined` for audio device enumeration.
 
-**Infinity Core 14.0-beta13** — published 2026-11-19. The current Umbrel
-manifest is **14.0-beta13-umbrel.7**; the image remains the developer's
-official moving beta tag, `ghcr.io/tekchansin/infinity-core:beta`.
+**Security consideration:** this setting exposes additional system paths normally hidden from a container. It is broader than a default Docker container, although the app is not in privileged mode. Do not publish its service ports directly to the internet.
 
-Notable beta13 changes:
-- Share a PC/server DAC, speakers or headphones to other Infinity Core instances.
-- Display which instance owns a shared output, with a **Take back** control.
-- Improve screen layout and mobile device descriptions and connectivity.
-- Fix Linux/Home Assistant routing when two audio outputs share the same name.
+Do **not** bind-mount `/proc/asound` directly onto `/proc/asound` inside the container: recent runc configurations reject such mounts.
 
-This release does **not** explicitly promise to fix the blank output-selector
-UI observed on one Umbrel installation, even though ALSA and the
-`/api/outputs` backend enumerate the devices correctly.
+### Update safely
 
-### Update without losing music
+Complete any active music transfers first, back up persistent app data, then use Umbrel's app update workflow. The moving `:beta` image may change independently from this integration's version. Verify installed application version from its startup logs.
 
-1. Finish or safely stop any active **Sync > Copy from your DAP** transfer
-   before updating; an Umbrel app update **stops and restarts** Infinity Core.
-2. Back up Infinity Core's persistent `/data` folder and independently back
-   up your music if synchronization can modify it.
-3. In **Umbrel > App Store > Updates**, update **Infinity Core (Beta)**.
-   Umbrel pulls the latest official `:beta` image during its app update.
-4. Verify `sudo docker logs --tail 30 localmedia-infinity-core_server_1`
-   starts with `Infinity Core 14.0-beta13`, then reopen the output selector.
-5. If the web UI still shows no outputs, avoid changing USB mounts: report the
-   frontend behavior to the developer with `/api/outputs` response evidence.
+Official upstream documentation: [Infinity Core Docker instructions](https://github.com/tekchansin/Infinity-Homeassistant).
 
-**Do not delete the app's data directory or uninstall it to upgrade.**
-Your `folderAccess` music selection, writable music mount, network mode,
-original icon, and USB/ALSA passthrough are unchanged by this manifest update.
+## Roon Server
 
-## Requirements
+- **Official container:** `ghcr.io/roonlabs/roonserver:latest` for AMD64/Linux.
+- **Network:** host networking required for Roon Remote and device discovery.
+- **Persistent state:** `/Roon`, including Roon database and downloaded application files.
+- **Backup destination:** `/RoonBackups`, configured in Roon settings.
+- **Music:** selectable folder mounted read-only at `/Music` to protect existing files.
+- **Playback:** compatible local ALSA devices or network outputs; an exclusive USB audio device should only be used by one playback application at a time.
+- **Management:** Roon Server is headless. Control it using the Roon app on a supported desktop or mobile device; the Umbrel dashboard tile displays setup instructions.
+- **Subscription:** Roon trial or subscription required.
 
-- umbrelOS 2.x on an **x86-64 Intel/AMD** machine, not ARM.
-- Ports **TCP 8930 and TCP 8931** available on the Umbrel host.
-- Music stored in an Umbrel-accessible folder; for this configuration the
-  default is the Umbrel **Downloads/music** folder. It can be changed to any
-  location exposed by Umbrel Files, including the internal 4 TB SSD.
-- The official Docker image `ghcr.io/tekchansin/infinity-core:beta`.
+Roon's internal application version is distinct from the Umbrel integration version. Roon can update its installed binaries while retaining `/Roon`.
 
-## Install as an Umbrel app (with dashboard tile)
+Official upstream documentation: [Roon Labs Docker image](https://github.com/RoonLabs/roon-docker).
 
-1. Create a **public GitHub repository** (for example `umbrel-infinity-core`).
-2. Put the **contents of this ZIP at the repository root**, including
-   `umbrel-app-store.yml` and `localmedia-infinity-core/`.
-3. Open Umbrel **App Store → ⋯ → Community App Stores → Add** and enter your
-   GitHub repository URL.
-4. Open the **Local Audio Apps** store and install **Infinity Core (Beta)**.
-5. If Umbrel asks for access to a music folder, select the folder containing
-   your files. Grant **read/write** access; leave the service mount `/music`.
-   You can change it later at **App Settings → Storage → Access to your folders**.
-6. Open the app tile or visit `http://umbrel.local:8930` on your LAN.
-7. On the pairing screen, choose **Show a code**. Find the six-digit pairing
-   code in **App Settings → Advanced → View logs** and enter it in the browser.
-8. Under **Infinity Core → Settings → Storage**, add `/music` if it is not
-   already present; the contents are the selected host music folder.
+## Storage and privacy
 
-> The 4 TB SSD is not automatically mounted merely because it exists.
-> Pick the actual music folder using Umbrel Files/App Settings. Do not
-> select or write to the 2 TB boot partition based on device size alone.
+No installation-specific hardware models, music-library details, local IP addresses, disk sizes, user profiles, or usernames belong in this repository. All examples are intended to be generic. Store deployment-specific settings in Umbrel app settings or local configuration, not in the public store.
 
-## Music sync and file safety
+For music libraries with write-enabled syncing, maintain an independent backup. Backups kept on the same storage device as the application are not independent disaster recovery backups.
 
-The complete `/music` folder is **writable**. This is intentional:
+## Troubleshooting
 
-```yaml
-# Docker Compose
-- ${UMBREL_ROOT}/data/storage/downloads/music:/music:rw
+```bash
+# List community app containers
+sudo docker ps --filter name=localmedia-
 
-# umbrel-app.yml (inside folderAccess.mounts)
-readOnly: false
+# Inspect Infinity Core startup messages
+sudo docker logs --tail 100 localmedia-infinity-core_server_1
+
+# Inspect Roon container startup messages
+sudo docker logs --tail 100 localmedia-roon-server_roon_1
 ```
 
-That allows Infinity Core to create, update or delete music files **to the
-extent supported by the upstream sync feature**. It also permits optional
-metadata/tag editing. Keep an independent backup of your music library and
-consider a smaller test folder before a first two-way sync. This integration
-cannot enforce sync direction, resolve conflicts, or prevent accidental deletes.
+Roon's application logs are stored in the persistent `/Roon/database/RoonServer/Logs/` directory.
 
-If a different folder is selected in Umbrel App Settings, its folder-access
-mount should replace the default `/music` mapping. **Do not add a second
-manual bind to `/music`** or edit Umbrel-generated Compose files.
+## Acknowledgements
 
-## USB access on your MINISFORUM
-
-The Docker container can access ALSA sound devices and the raw USB bus:
-
-```yaml
-volumes:
-  - /dev/snd:/dev/snd:rw
-  - /dev/bus/usb:/dev/bus/usb:rw
-device_cgroup_rules:
-  - 'c 116:* rwm'  # ALSA
-  - 'c 189:* rwm'  # USB bus
-```
-
-This supports direct audio output through compatible USB DACs and makes
-raw USB device nodes available to applications inside the container.
-**ALSA discovery:** Docker masks `/proc/asound` by default, so the TEAC's
-device nodes may be mounted correctly while ALSA cannot enumerate any cards.
-The Docker Compose `security_opt: [systempaths=unconfined]` option used by this
-package unmasks `/proc/asound` **without** the forbidden bind mount.
-This uses a documented Docker feature, but actual Infinity Core detection
-on Umbrel hardware has not yet been verified.
-
-**Security trade-off:** `systempaths=unconfined` disables Docker's path-level
-masking and read-only restrictions for other system paths too, not only ALSA.
-It is less isolated than the default container. The application still does
-not run in `privileged` mode, and Docker's separate AppArmor/seccomp controls
-are not disabled by this flag. Do not expose Infinity Core's ports to the
-internet. To restore Docker's normal system-path isolation, remove
-`security_opt: [systempaths=unconfined]` and recreate the container.
-
-**Do not add a direct `/proc/asound:/proc/asound:ro` mount.** Umbrel's
-Docker/runc refused that mount and the app could not start.
-
-### Test before updating the app
-
-This uses a one-off throwaway container that cannot affect the installed
-Infinity Core database or music library:
-
-```sh
-sudo docker run --rm --pull=never --network=none --cap-drop=ALL \
-  --security-opt systempaths=unconfined \
-  --entrypoint sh ghcr.io/tekchansin/infinity-core:beta \
-  -c 'cat /proc/asound/cards'
-```
-
-If this lists `2 [UD701N]`, then the Docker unmasking mechanism works
-on the host. It does **not** prove Infinity Core will show the DAC or play
-audio; verify those inside the app after the update.
-Directory mounts expose newly connected USB devices without changing Compose.
-Actual playback, MTP/sync and other USB functions still depend on upstream
-Infinity Core support. Networking via Infinity Link does not require USB.
-
-**Security and scope:** This is broad USB bus access, not unrestricted
-host-device access. USB serial (`/dev/ttyUSB*`, `/dev/ttyACM*`), HID raw and
-storage block devices are not passed through. There is no `privileged: true`
-or whole-host `/dev` mount. For music on a USB SSD, select its folder through
-Umbrel's Files/app storage selector rather than exposing the block device.
-
-Verify through Umbrel SSH:
-
-```sh
-cid=$(sudo docker ps --filter 'ancestor=ghcr.io/tekchansin/infinity-core:beta' --format '{{.ID}}' | head -n 1)
-test -n "$cid" || { echo 'Infinity Core container not found'; exit 1; }
-sudo docker exec "$cid" sh -c 'ls -l /dev/snd/ /dev/bus/usb/ 2>&1'
-sudo docker inspect "$cid" --format '{{json .HostConfig.DeviceCgroupRules}}'
-```
-## Play on iBasso DX340
-
-Enable **Infinity Link** on your DAP and select the DAP from the playback
-outputs in Infinity Core. Keep the DAP and Umbrel on the same LAN/VLAN for
-automatic discovery. Host networking is required for normal mDNS/SSDP
-behavior. Do not forward Infinity Core ports to the internet.
-
-For desktop Infinity Core pairing from Windows or macOS, the developer also
-supports using a code obtained with:
-
-```sh
-# On Umbrel via SSH; finds the app container without assuming its name:
-cid=$(sudo docker ps --filter 'ancestor=ghcr.io/tekchansin/infinity-core:beta' --format '{{.ID}}' | head -n 1)
-test -n "$cid" || { echo 'Infinity Core is not running'; exit 1; }
-sudo docker exec "$cid" infinity-core --pair-code
-```
-
-## Operations and caveats
-
-- **Host mode:** there is intentionally no `app_proxy` and no `ports:` mapping.
-  The web UI is on `8930` and PC client uses `8931` directly. Browser
-  security comes from Infinity Core's pairing, not Umbrel's proxy login.
-- **No speculative healthcheck:** upstream does not document a stable health
-  endpoint; inspect the app's logs and verify `http://umbrel.local:8930`.
-- **Scoped USB access:** ALSA and USB bus device permissions are enabled.
-  `privileged: true` and whole-host `/dev` access remain disabled.
-- **Backups:** `/data` holds application state. A music library must be backed
-  up independently, especially with write-enabled syncing. Do not assume
-  user-selected external files are covered by Umbrel backups.
-- **Image updates:** `:beta` is a moving tag. Take a backup before upgrading;
-  update the store version if you publish a new integration release.
-- **Compatibility:** this integration is based on upstream beta documentation,
-  not an installation test on your MINISFORUM. Verify paths and syncing before
-  making the library your source of truth.
-
-## Quick verification via SSH
-
-```sh
-sudo docker ps --format 'table {{.Names}}	{{.Image}}	{{.Status}}' | grep -i infinity
-sudo ss -lntup | grep -E ':(8930|8931)\b'
-# For the default music path (not a custom selection):
-ls -la /umbrel/data/storage/downloads/music 2>/dev/null || true
-```
-
-## Sources
-
-- [Vendor Docker documentation](https://github.com/tekchansin/Infinity-Homeassistant)
-- [Original project icon](https://github.com/tekchansin/Infinity-Homeassistant/blob/main/infinity_beta/icon.png)
-- [Umbrel Community App Store template](https://github.com/getumbrel/umbrel-community-app-store)
-- [Umbrel app storage settings](https://umbrel.com/support/apps/app-settings)
-- [Infinity Core product](https://anantarultimate.com/infinity-core.html)
+This is an unofficial packaging project. Infinity Core is proprietary software developed by Anantar Ultimate, and Roon Server is proprietary software developed by Roon Labs. The application logos are referenced from the respective developers' public repositories; the container images are maintained by the upstream developers.
