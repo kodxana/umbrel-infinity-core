@@ -21,7 +21,7 @@ environment:
   - name: TZ
     services:
       - roon
-    default: Europe/Warsaw
+    default: Etc/UTC
     note: Local timezone used by Roon for logs and scheduled backups.
   - name: ROON_INSTALL_BRANCH
     services:
@@ -36,7 +36,7 @@ environment:
 
 category: media
 name: Roon Server
-version: "1.0.0"
+version: "1.0.1"
 tagline: Your high-fidelity music server, powered by Roon Labs
 description: >-
   Roon Server organizes your music, streams to Roon Ready, USB, AirPlay and
@@ -66,9 +66,7 @@ dependencies: []
 gallery: []
 permissions: []
 releaseNotes: >-
-  Initial Umbrel integration using the official Roon Labs Docker image.
-  Includes a headless Roon Server, an explanatory Umbrel landing page,
-  native read-only access to a user-selected Music folder, persistent
-  SSD-backed /Roon state, /RoonBackups, host networking, and local ALSA
-  USB DAC passthrough. The app package version is independent from the
-  Roon Server software version, which Roon updates on its own.
+  Official Roon Labs Docker image with host networking, persistent Roon state,
+  dedicated backups, read-only music-folder selection and local ALSA access.
+  This packaging revision generalizes public documentation and sets a neutral
+  UTC timezone default. Roon's actual software version is managed by Roon.
