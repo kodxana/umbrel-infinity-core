@@ -71,11 +71,12 @@ manual bind to `/music`** or edit Umbrel-generated Compose files.
 
 ## USB access on your MINISFORUM
 
-The Docker container can access ALSA sound devices and the raw USB bus:
+The Docker container can access ALSA sound devices, the ALSA card inventory, and the raw USB bus:
 
 ```yaml
 volumes:
   - /dev/snd:/dev/snd:rw
+  - /proc/asound:/proc/asound:ro
   - /dev/bus/usb:/dev/bus/usb:rw
 device_cgroup_rules:
   - 'c 116:* rwm'  # ALSA
@@ -84,6 +85,8 @@ device_cgroup_rules:
 
 This supports direct audio output through compatible USB DACs and makes
 raw USB device nodes available to applications inside the container.
+Docker normally masks `/proc/asound`; mounting it read-only exposes ALSA's
+card list and device information. This is important for DAC enumeration.
 Directory mounts expose newly connected USB devices without changing Compose.
 Actual playback, MTP/sync and other USB functions still depend on upstream
 Infinity Core support. Networking via Infinity Link does not require USB.
@@ -99,7 +102,7 @@ Verify through Umbrel SSH:
 ```sh
 cid=$(sudo docker ps --filter 'ancestor=ghcr.io/tekchansin/infinity-core:beta' --format '{{.ID}}' | head -n 1)
 test -n "$cid" || { echo 'Infinity Core container not found'; exit 1; }
-sudo docker exec "$cid" sh -c 'ls -l /dev/snd/ /dev/bus/usb/ 2>&1'
+sudo docker exec "$cid" sh -c 'cat /proc/asound/cards; ls -l /dev/snd/ /dev/bus/usb/ 2>&1'
 sudo docker inspect "$cid" --format '{{json .HostConfig.DeviceCgroupRules}}'
 ```
 ## Play on iBasso DX340
