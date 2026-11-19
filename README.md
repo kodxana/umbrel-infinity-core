@@ -84,11 +84,39 @@ device_cgroup_rules:
 
 This supports direct audio output through compatible USB DACs and makes
 raw USB device nodes available to applications inside the container.
-**Known limitation:** Docker normally masks `/proc/asound`, and this Umbrel
-host's runc refuses a bind mount into `/proc`. Do not add a direct
-`/proc/asound:/proc/asound:ro` mount: it prevents the app from starting. DAC
-enumeration must be diagnosed separately; `/dev/snd` visibility alone does not
-establish that the app can enumerate or play a sound card.
+**ALSA discovery:** Docker masks `/proc/asound` by default, so the TEAC's
+device nodes may be mounted correctly while ALSA cannot enumerate any cards.
+The Docker Compose `security_opt: [systempaths=unconfined]` option used by this
+package unmasks `/proc/asound` **without** the forbidden bind mount.
+This uses a documented Docker feature, but actual Infinity Core detection
+on Umbrel hardware has not yet been verified.
+
+**Security trade-off:** `systempaths=unconfined` disables Docker's path-level
+masking and read-only restrictions for other system paths too, not only ALSA.
+It is less isolated than the default container. The application still does
+not run in `privileged` mode, and Docker's separate AppArmor/seccomp controls
+are not disabled by this flag. Do not expose Infinity Core's ports to the
+internet. To restore Docker's normal system-path isolation, remove
+`security_opt: [systempaths=unconfined]` and recreate the container.
+
+**Do not add a direct `/proc/asound:/proc/asound:ro` mount.** Umbrel's
+Docker/runc refused that mount and the app could not start.
+
+### Test before updating the app
+
+This uses a one-off throwaway container that cannot affect the installed
+Infinity Core database or music library:
+
+```sh
+sudo docker run --rm --pull=never --network=none --cap-drop=ALL \
+  --security-opt systempaths=unconfined \
+  --entrypoint sh ghcr.io/tekchansin/infinity-core:beta \
+  -c 'cat /proc/asound/cards'
+```
+
+If this lists `2 [UD701N]`, then the Docker unmasking mechanism works
+on the host. It does **not** prove Infinity Core will show the DAC or play
+audio; verify those inside the app after the update.
 Directory mounts expose newly connected USB devices without changing Compose.
 Actual playback, MTP/sync and other USB functions still depend on upstream
 Infinity Core support. Networking via Infinity Link does not require USB.
