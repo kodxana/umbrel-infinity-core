@@ -19,7 +19,7 @@ services:
 
     environment:
       INFINITY_NAME: "Infinity Core on Umbrel"
-      TZ: "Europe/Warsaw"
+      TZ: "Etc/UTC"
 
     volumes:
       # Persistent library database, artwork cache, settings and updates.
@@ -31,7 +31,7 @@ services:
       - ${UMBREL_ROOT}/data/storage/downloads/music:/music:rw
 
       # ALSA sound devices and the USB bus, including hot-plugged devices.
-      # Both are scoped to relevant device classes; no privileged mode needed.
+      # Device permissions are scoped by class; privileged mode is disabled.
       - /dev/snd:/dev/snd:rw
       - /dev/bus/usb:/dev/bus/usb:rw
 
