@@ -1,0 +1,69 @@
+manifestVersion: "1.1"
+id: localmedia-infinity-core
+
+# umbrelOS 2.x: select a music library in App Settings > Storage.
+storage:
+  dataRoot: data
+
+folderAccess:
+  - id: music-library
+    name: Music Library
+    note: >-
+      Select your music folder. Read/write access is required for Infinity Core
+      music sync and optional tag editing. The folder appears at /music.
+    mounts:
+      - service: server
+        targetPath: /music
+        readOnly: false
+
+environment:
+  - name: INFINITY_NAME
+    services:
+      - server
+    default: Infinity Core on Umbrel
+    note: Name shown to compatible DAPs and other playback devices.
+  - name: TZ
+    services:
+      - server
+    default: Europe/Warsaw
+    note: Local timezone for timestamps and scheduling.
+
+category: media
+name: Infinity Core (Beta)
+version: "14.0-beta12-umbrel.2"
+tagline: A high-fidelity music hub for your library and playback devices
+description: >-
+  Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
+  radio into one music library. Play to compatible iBasso DAPs using Infinity
+  Link, or use AirPlay, Google Cast, UPnP and connected USB DACs.
+
+  This unofficial umbrelOS package uses the official Infinity Core beta Docker
+  image. Host networking preserves device discovery on your local network.
+  The music library is mounted read/write to support music sync and optional
+  metadata editing. Configuration and library database are stored separately.
+
+  First-time browser pairing requires a six-digit code from the app logs.
+  Infinity Core is proprietary software; this package only supplies Umbrel
+  integration files.
+
+# Authentic original project icon, not AI-generated artwork.
+icon: https://raw.githubusercontent.com/tekchansin/Infinity-Homeassistant/main/infinity_beta/icon.png
+
+developer: Anantar Ultimate
+website: https://anantarultimate.com/infinity-core.html
+repo: https://github.com/tekchansin/Infinity-Homeassistant
+support: https://discord.gg/Z9T8VfshVs
+submitter: Community (unofficial)
+port: 8930
+path: ""
+dependencies: []
+gallery: []
+permissions:
+  - STORAGE_DOWNLOADS
+
+releaseNotes: >-
+  Umbrel packaging revision 2: authentic official Infinity Core icon,
+  read/write music library for synchronization and tag changes, and native
+  umbrelOS 2.x folder selection. Host networking enables local Infinity Link,
+  AirPlay, Google Cast and UPnP discovery. This package does not include or
+  modify the upstream proprietary application.
