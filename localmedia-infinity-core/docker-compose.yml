@@ -25,6 +25,9 @@ services:
       # ALSA sound devices and the USB bus, including hot-plugged devices.
       # Both are scoped to relevant device classes; no privileged mode needed.
       - /dev/snd:/dev/snd:rw
+      # Docker normally masks /proc/asound, hiding ALSA's card inventory.
+      # Required for reliable detection of the connected TEAC UD-701N.
+      - /proc/asound:/proc/asound:ro
       - /dev/bus/usb:/dev/bus/usb:rw
 
     device_cgroup_rules:
