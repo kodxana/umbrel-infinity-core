@@ -4,7 +4,7 @@
 Infinity Core beta by Anantar Ultimate / tekChansin. This repository contains
 integration YAML only; it does not redistribute or modify Infinity Core.
 
-## What is different in revision 2?
+## Features
 
 - The **real Infinity Core project icon** is referenced directly from the
   developer's [official Home Assistant repository](https://github.com/tekchansin/Infinity-Homeassistant/blob/main/infinity_beta/icon.png).
@@ -15,6 +15,7 @@ integration YAML only; it does not redistribute or modify Infinity Core.
 - Persistent `/data` separate from music, with host networking for local device
   discovery (iBasso Infinity Link, AirPlay, Google Cast, UPnP).
 - Editable `INFINITY_NAME` and `TZ` from Umbrel app settings.
+- Direct ALSA audio and raw USB bus access, including hot-plugged compatible devices.
 
 ## Requirements
 
@@ -68,6 +69,39 @@ If a different folder is selected in Umbrel App Settings, its folder-access
 mount should replace the default `/music` mapping. **Do not add a second
 manual bind to `/music`** or edit Umbrel-generated Compose files.
 
+## USB access on your MINISFORUM
+
+The Docker container can access ALSA sound devices and the raw USB bus:
+
+```yaml
+volumes:
+  - /dev/snd:/dev/snd:rw
+  - /dev/bus/usb:/dev/bus/usb:rw
+device_cgroup_rules:
+  - 'c 116:* rwm'  # ALSA
+  - 'c 189:* rwm'  # USB bus
+```
+
+This supports direct audio output through compatible USB DACs and makes
+raw USB device nodes available to applications inside the container.
+Directory mounts expose newly connected USB devices without changing Compose.
+Actual playback, MTP/sync and other USB functions still depend on upstream
+Infinity Core support. Networking via Infinity Link does not require USB.
+
+**Security and scope:** This is broad USB bus access, not unrestricted
+host-device access. USB serial (`/dev/ttyUSB*`, `/dev/ttyACM*`), HID raw and
+storage block devices are not passed through. There is no `privileged: true`
+or whole-host `/dev` mount. For music on a USB SSD, select its folder through
+Umbrel's Files/app storage selector rather than exposing the block device.
+
+Verify through Umbrel SSH:
+
+```sh
+cid=$(sudo docker ps --filter 'ancestor=ghcr.io/tekchansin/infinity-core:beta' --format '{{.ID}}' | head -n 1)
+test -n "$cid" || { echo 'Infinity Core container not found'; exit 1; }
+sudo docker exec "$cid" sh -c 'ls -l /dev/snd/ /dev/bus/usb/ 2>&1'
+sudo docker inspect "$cid" --format '{{json .HostConfig.DeviceCgroupRules}}'
+```
 ## Play on iBasso DX340
 
 Enable **Infinity Link** on your DAP and select the DAP from the playback
@@ -92,8 +126,8 @@ sudo docker exec "$cid" infinity-core --pair-code
   security comes from Infinity Core's pairing, not Umbrel's proxy login.
 - **No speculative healthcheck:** upstream does not document a stable health
   endpoint; inspect the app's logs and verify `http://umbrel.local:8930`.
-- **No elevated privileges by default:** no `/dev/snd` required for Infinity
-  Link playback. USB DAC passthrough is available as a commented option.
+- **Scoped USB access:** ALSA and USB bus device permissions are enabled.
+  `privileged: true` and whole-host `/dev` access remain disabled.
 - **Backups:** `/data` holds application state. A music library must be backed
   up independently, especially with write-enabled syncing. Do not assume
   user-selected external files are covered by Umbrel backups.
