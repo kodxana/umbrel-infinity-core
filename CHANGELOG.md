@@ -1,5 +1,15 @@
 # Changelog
 
+## 14.0-beta12-umbrel.6
+
+- Added `security_opt: [systempaths=unconfined]` to make ALSA's
+  `/proc/asound/cards` visible in Docker without bind-mounting into `/proc`.
+- Kept `privileged: true` disabled, USB/ALSA device nodes, host networking,
+  and the writable music library.
+- Documented the security trade-off: this exposes other normally masked
+  system paths too, and remains unverified on the target hardware.
+- Included a disposable Docker test and a rollback path.
+
 ## 14.0-beta12-umbrel.5
 
 - **Hotfix:** removed unsupported `/proc/asound` bind mount from revision 4.
