@@ -1,5 +1,17 @@
 # Changelog
 
+## Roon Server — Umbrel app 1.0.0
+
+- Added a separate Roon Server app to the **Local Audio Apps** store.
+- Uses Roon Labs' official `ghcr.io/roonlabs/roonserver:latest` image,
+  host networking and the production channel.
+- Persists Roon state, separates scheduled backups, and lets Umbrel users
+  select a shared music folder read-only.
+- Provides ALSA access to the MINISFORUM's USB DAC with the existing
+  /proc/asound compatibility workaround; avoids privileged mode.
+- Includes a lightweight Umbrel landing page that points users to Roon Remote.
+- Existing Infinity Core app, data, and version are unchanged.
+
 ## 14.0-beta13-umbrel.7 — 2026-11-19
 
 - Updated the Umbrel app version to track upstream **Infinity Core 14.0-beta13**.
