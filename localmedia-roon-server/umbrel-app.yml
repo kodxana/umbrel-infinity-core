@@ -1,0 +1,74 @@
+manifestVersion: "1.1"
+id: localmedia-roon-server
+storage:
+  dataRoot: data
+
+# Share the existing music library without giving Roon permission to
+# rewrite the files managed/synchronized by Infinity Core.
+folderAccess:
+  - id: music-library
+    name: Music Library
+    note: >-
+      Select the same Music folder used by Infinity Core. Roon sees it at
+      /Music, read-only. Use Roon Remote to add /Music under Settings > Storage.
+      Drag-and-drop importing directly into this folder is disabled.
+    mounts:
+      - service: roon
+        targetPath: /Music
+        readOnly: true
+
+environment:
+  - name: TZ
+    services:
+      - roon
+    default: Europe/Warsaw
+    note: Local timezone used by Roon for logs and scheduled backups.
+  - name: ROON_INSTALL_BRANCH
+    services:
+      - roon
+    default: production
+    options:
+      - production
+      - earlyaccess
+    note: >-
+      Production is recommended. Early Access can modify the database;
+      back up /Roon before changing branches.
+
+category: media
+name: Roon Server
+version: "1.0.0"
+tagline: Your high-fidelity music server, powered by Roon Labs
+description: >-
+  Roon Server organizes your music, streams to Roon Ready, USB, AirPlay and
+  other supported outputs, and integrates streaming services in one library.
+  Control the server with the Roon application on Windows, macOS, iOS or
+  Android. Roon Server does not include a browser music player.
+
+  This is an unofficial umbrelOS package using Roon Labs' official amd64
+  Docker image. It uses host networking for device discovery, persists the
+  database on Umbrel storage, keeps backups separately, and mounts the
+  selected music library read-only. USB ALSA access is enabled for local DACs.
+
+  A lightweight Umbrel landing page explains how to connect Roon Remote.
+  An active Roon subscription or trial is required to use Roon Server.
+
+# Authentic Roon Labs artwork from its official roon-docker repository.
+icon: https://raw.githubusercontent.com/RoonLabs/roon-docker/main/configurator/public/roon-moon.svg
+
+developer: Roon Labs
+website: https://roon.app
+repo: https://github.com/RoonLabs/roon-docker
+support: https://help.roonlabs.com/
+submitter: Community (unofficial)
+port: 8998
+path: ""
+dependencies: []
+gallery: []
+permissions: []
+releaseNotes: >-
+  Initial Umbrel integration using the official Roon Labs Docker image.
+  Includes a headless Roon Server, an explanatory Umbrel landing page,
+  native read-only access to a user-selected Music folder, persistent
+  SSD-backed /Roon state, /RoonBackups, host networking, and local ALSA
+  USB DAC passthrough. The app package version is independent from the
+  Roon Server software version, which Roon updates on its own.
