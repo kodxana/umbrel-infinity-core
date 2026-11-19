@@ -44,7 +44,7 @@
       <li>Install or open <strong>Roon</strong> on a PC, Mac, phone, or tablet on the same local network.</li>
       <li>Choose the Roon Server running on your Umbrel machine and sign in.</li>
       <li>In <strong>Settings → Storage</strong>, select the library folder <code>/Music</code>.</li>
-      <li>In <strong>Settings → Audio</strong>, enable your TEAC USB DAC or a discovered network output.</li>
+      <li>In <strong>Settings → Audio</strong>, enable a supported USB audio device or discovered network output.</li>
     </ol>
     <div class="links">
       <a class="action" href="https://roon.app/" rel="noopener noreferrer" target="_blank">Get the Roon app</a>
@@ -58,7 +58,7 @@
   </section>
   <section class="card">
     <h2>Local DAC usage</h2>
-    <p>Roon Server and Infinity Core can both detect the TEAC UD-701N. They should not try to play through the same USB DAC simultaneously: stop playback in one application before selecting it in the other.</p>
+    <p>If two playback applications share the same physical USB DAC, stop playback in one before selecting that output in the other. Exclusive audio devices may not support simultaneous access.</p>
   </section>
   <footer><small>Unofficial umbrelOS packaging. Roon Server and the Roon logo are products of Roon Labs. The service uses Roon Labs' official Docker image. A Roon subscription or trial is required.</small></footer>
 </main>
