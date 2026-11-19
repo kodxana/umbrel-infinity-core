@@ -1,5 +1,16 @@
 # Changelog
 
+## 14.0-beta13-umbrel.7 — 2026-11-19
+
+- Updated the Umbrel app version to track upstream **Infinity Core 14.0-beta13**.
+- Documented upstream device sharing, shared-output ownership, mobile improvements,
+  wider window layout, and Linux/Home Assistant duplicate-output playback fix.
+- Retained the moving official Docker `:beta` image; Umbrel pulls it on update.
+- No changes to the proven host network, ALSA sysfs/proc visibility workaround,
+  USB bus passthrough, selected music folder or read/write sync permissions.
+- Documented the need to finish transfers and back up persistent data before
+  any image update; upstream did not claim a fix for the blank device selector.
+
 ## 14.0-beta12-umbrel.6
 
 - Added `security_opt: [systempaths=unconfined]` to make ALSA's
