@@ -17,6 +17,39 @@ integration YAML only; it does not redistribute or modify Infinity Core.
 - Editable `INFINITY_NAME` and `TZ` from Umbrel app settings.
 - Direct ALSA audio and raw USB bus access, including hot-plugged compatible devices.
 
+## Current upstream version and updates
+
+**Infinity Core 14.0-beta13** — published 2026-11-19. The current Umbrel
+manifest is **14.0-beta13-umbrel.7**; the image remains the developer's
+official moving beta tag, `ghcr.io/tekchansin/infinity-core:beta`.
+
+Notable beta13 changes:
+- Share a PC/server DAC, speakers or headphones to other Infinity Core instances.
+- Display which instance owns a shared output, with a **Take back** control.
+- Improve screen layout and mobile device descriptions and connectivity.
+- Fix Linux/Home Assistant routing when two audio outputs share the same name.
+
+This release does **not** explicitly promise to fix the blank output-selector
+UI observed on one Umbrel installation, even though ALSA and the
+`/api/outputs` backend enumerate the devices correctly.
+
+### Update without losing music
+
+1. Finish or safely stop any active **Sync > Copy from your DAP** transfer
+   before updating; an Umbrel app update **stops and restarts** Infinity Core.
+2. Back up Infinity Core's persistent `/data` folder and independently back
+   up your music if synchronization can modify it.
+3. In **Umbrel > App Store > Updates**, update **Infinity Core (Beta)**.
+   Umbrel pulls the latest official `:beta` image during its app update.
+4. Verify `sudo docker logs --tail 30 localmedia-infinity-core_server_1`
+   starts with `Infinity Core 14.0-beta13`, then reopen the output selector.
+5. If the web UI still shows no outputs, avoid changing USB mounts: report the
+   frontend behavior to the developer with `/api/outputs` response evidence.
+
+**Do not delete the app's data directory or uninstall it to upgrade.**
+Your `folderAccess` music selection, writable music mount, network mode,
+original icon, and USB/ALSA passthrough are unchanged by this manifest update.
+
 ## Requirements
 
 - umbrelOS 2.x on an **x86-64 Intel/AMD** machine, not ARM.
