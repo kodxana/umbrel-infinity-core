@@ -25,12 +25,12 @@ environment:
   - name: TZ
     services:
       - server
-    default: Europe/Warsaw
+    default: Etc/UTC
     note: Local timezone for timestamps and scheduling.
 
 category: media
 name: Infinity Core (Beta)
-version: "14.0-beta13-umbrel.7"
+version: "14.0-beta13-umbrel.8"
 tagline: A high-fidelity music hub for your library and playback devices
 description: >-
   Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
@@ -63,13 +63,8 @@ permissions:
   - STORAGE_DOWNLOADS
 
 releaseNotes: >-
-  Infinity Core 14.0-beta13 (2026-11-19): share a computer's DAC or other
-  audio outputs with other Infinity Core installations over Infinity Link,
-  improved shared-output ownership and Take back behavior, mobile playback
-  stability improvements, better large-screen layout and device descriptions,
-  and a Linux/Home Assistant fix for duplicate-named outputs playing through
-  the wrong device. The release does not explicitly claim to fix an empty
-  web output selector. The official beta Docker image is still :beta.
-  Umbrel integration retains the tested ALSA systempaths workaround,
-  host networking, USB device access and writable music library.
-  Finish any DAP file transfers and back up /data before updating.
+  Aligned with upstream Infinity Core 14.0-beta13. This packaging update
+  removes deployment-specific examples, sets a neutral UTC timezone default,
+  and retains host-network discovery, USB and ALSA access, the authentic
+  project icon, and read/write music-folder access for synchronization.
+  Finish transfers and back up persistent data before updating.
