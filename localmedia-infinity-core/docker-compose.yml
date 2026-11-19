@@ -9,6 +9,14 @@ services:
     restart: unless-stopped
     stop_grace_period: 60s
 
+    # ALSA reads /proc/asound/cards to enumerate sound cards. Docker masks
+    # /proc/asound by default even when /dev/snd is mounted. Unmask the
+    # container's system paths without using privileged mode. NOTE: this also
+    # unmasks other protected /proc and /sys paths; see README security notes.
+    # Do NOT bind-mount /proc/asound into /proc: runc rejects that mount.
+    security_opt:
+      - systempaths=unconfined
+
     environment:
       INFINITY_NAME: "Infinity Core on Umbrel"
       TZ: "Europe/Warsaw"
