@@ -30,7 +30,7 @@ environment:
 
 category: media
 name: Infinity Core (Beta)
-version: "14.0-beta12-umbrel.3"
+version: "14.0-beta12-umbrel.4"
 tagline: A high-fidelity music hub for your library and playback devices
 description: >-
   Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
@@ -63,7 +63,8 @@ permissions:
   - STORAGE_DOWNLOADS
 
 releaseNotes: >-
-  Umbrel packaging revision 3: added host ALSA sound and USB bus passthrough,
-  including device cgroup permissions for hot-plugged USB DACs and compatible
-  peripherals. Keeps native read/write music folder selection, the original
-  developer icon and host networking. Full privileged mode is not enabled.
+  Umbrel packaging revision 4: expose the host's ALSA card inventory via a
+  read-only /proc/asound bind mount. Docker commonly masks this path, which can
+  prevent detection of the TEAC UD-701N and other USB DACs even if /dev/snd is
+  mounted. Existing USB/ALSA permissions, host networking and writable music
+  library settings remain unchanged. Network device discovery is not changed.
