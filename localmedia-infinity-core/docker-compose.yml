@@ -1,0 +1,30 @@
+# Infinity Core for umbrelOS (community integration)
+# Vendor Docker guide: https://github.com/tekchansin/Infinity-Homeassistant
+# Linux amd64 only. Host networking enables local device discovery.
+
+services:
+  server:
+    image: ghcr.io/tekchansin/infinity-core:beta
+    network_mode: host
+    restart: unless-stopped
+    stop_grace_period: 60s
+
+    environment:
+      INFINITY_NAME: "Infinity Core on Umbrel"
+      TZ: "Europe/Warsaw"
+
+    volumes:
+      # Persistent library database, artwork cache, settings and updates.
+      - ${APP_DATA_DIR}/data:/data:rw
+
+      # Default music location. A folder chosen in Umbrel App Settings >
+      # Storage > Music Library is mounted at /music by folderAccess.
+      # Write access is needed for upstream music sync and optional tag edits.
+      - ${UMBREL_ROOT}/data/storage/downloads/music:/music:rw
+
+    # Optional USB DAC physically attached to the Umbrel host:
+    # devices:
+    #   - /dev/snd:/dev/snd
+
+# No app_proxy or ports: upstream listens directly on TCP 8930/8931 and
+# uses mDNS/SSDP with host networking. Do not expose these ports to the internet.
