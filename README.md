@@ -20,6 +20,11 @@ The apps install independently, each with its own persistent state. They can rea
 
 ## Infinity Core (Beta)
 
+**Upstream version:** 14.0-beta14 (2026-11-19). The device selector now
+supports **Edit list** to hide or restore unused local and network outputs.
+The currently playing output stays visible, and visibility choices are
+shared between clients connected to the same server.
+
 - **Playback:** local ALSA sound devices, Infinity Link, and compatible network renderers.
 - **Network:** host networking for local device discovery.
 - **Music:** a selected music folder appears inside the container at `/music`, with **read/write** access for music transfers and optional metadata editing.
