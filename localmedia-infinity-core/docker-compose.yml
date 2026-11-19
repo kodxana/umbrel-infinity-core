@@ -22,9 +22,14 @@ services:
       # Write access is needed for upstream music sync and optional tag edits.
       - ${UMBREL_ROOT}/data/storage/downloads/music:/music:rw
 
-    # Optional USB DAC physically attached to the Umbrel host:
-    # devices:
-    #   - /dev/snd:/dev/snd
+      # ALSA sound devices and the USB bus, including hot-plugged devices.
+      # Both are scoped to relevant device classes; no privileged mode needed.
+      - /dev/snd:/dev/snd:rw
+      - /dev/bus/usb:/dev/bus/usb:rw
+
+    device_cgroup_rules:
+      - 'c 116:* rwm'  # ALSA sound cards
+      - 'c 189:* rwm'  # USB bus devices
 
 # No app_proxy or ports: upstream listens directly on TCP 8930/8931 and
 # uses mDNS/SSDP with host networking. Do not expose these ports to the internet.
