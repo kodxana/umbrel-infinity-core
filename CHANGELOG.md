@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.0-beta12-umbrel.4
+
+- Exposed host ALSA inventory as a read-only `/proc/asound:/proc/asound:ro` bind mount.
+- Fixed missing `/proc/asound/cards` inside Docker, which can block USB DAC enumeration.
+- Kept the existing USB and ALSA device cgroup rules, host networking and writable music folder.
+- Separated USB DAC discovery troubleshooting from LAN multicast discovery.
+
 ## 14.0-beta12-umbrel.3
 
 - Added raw USB bus and ALSA device access, including hot-plug support.
