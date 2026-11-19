@@ -30,7 +30,7 @@ environment:
 
 category: media
 name: Infinity Core (Beta)
-version: "14.0-beta12-umbrel.5"
+version: "14.0-beta12-umbrel.6"
 tagline: A high-fidelity music hub for your library and playback devices
 description: >-
   Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
@@ -63,8 +63,9 @@ permissions:
   - STORAGE_DOWNLOADS
 
 releaseNotes: >-
-  Hotfix: removed the unsupported /proc/asound bind mount introduced in revision 4.
-  Docker/runc rejects mounts beneath /proc on the Umbrel host and would prevent
-  Infinity Core from starting. Retains host networking, ALSA and USB bus device
-  access, and the read/write music folder. USB DAC enumeration requires further
-  investigation and is not claimed fixed by this rollback.
+  Audio compatibility update: use Docker's supported systempaths=unconfined
+  option to expose the ALSA card inventory at /proc/asound, without the
+  forbidden direct bind mount that prevented startup in revision 4.
+  This broadens access to masked system paths and should be enabled only on
+  a trusted host. Privileged mode remains disabled. Verify DAC detection and
+  audio playback after updating. Host networking and music RW are unchanged.
