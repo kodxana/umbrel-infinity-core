@@ -1,5 +1,13 @@
 # Changelog
 
+## Infinity Core — Umbrel integration 14.0-beta14-umbrel.9
+
+- Updated the integration to align with upstream Infinity Core 14.0-beta14.
+- New **Edit list** control can hide unused audio outputs and restore them.
+- No changes to Docker image path, USB/ALSA access, host networking or
+  writable music folder selection.
+- Maintains generic documentation without deployment-specific information.
+
 ## Roon Server — Umbrel integration 1.0.1
 
 - Published a separate Roon Server app using the official upstream container image.
