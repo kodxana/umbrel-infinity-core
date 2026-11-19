@@ -30,7 +30,7 @@ environment:
 
 category: media
 name: Infinity Core (Beta)
-version: "14.0-beta12-umbrel.6"
+version: "14.0-beta13-umbrel.7"
 tagline: A high-fidelity music hub for your library and playback devices
 description: >-
   Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
@@ -63,9 +63,13 @@ permissions:
   - STORAGE_DOWNLOADS
 
 releaseNotes: >-
-  Audio compatibility update: use Docker's supported systempaths=unconfined
-  option to expose the ALSA card inventory at /proc/asound, without the
-  forbidden direct bind mount that prevented startup in revision 4.
-  This broadens access to masked system paths and should be enabled only on
-  a trusted host. Privileged mode remains disabled. Verify DAC detection and
-  audio playback after updating. Host networking and music RW are unchanged.
+  Infinity Core 14.0-beta13 (2026-11-19): share a computer's DAC or other
+  audio outputs with other Infinity Core installations over Infinity Link,
+  improved shared-output ownership and Take back behavior, mobile playback
+  stability improvements, better large-screen layout and device descriptions,
+  and a Linux/Home Assistant fix for duplicate-named outputs playing through
+  the wrong device. The release does not explicitly claim to fix an empty
+  web output selector. The official beta Docker image is still :beta.
+  Umbrel integration retains the tested ALSA systempaths workaround,
+  host networking, USB device access and writable music library.
+  Finish any DAP file transfers and back up /data before updating.
