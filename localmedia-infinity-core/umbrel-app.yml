@@ -30,7 +30,7 @@ environment:
 
 category: media
 name: Infinity Core (Beta)
-version: "14.0-beta12-umbrel.4"
+version: "14.0-beta12-umbrel.5"
 tagline: A high-fidelity music hub for your library and playback devices
 description: >-
   Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
@@ -63,8 +63,8 @@ permissions:
   - STORAGE_DOWNLOADS
 
 releaseNotes: >-
-  Umbrel packaging revision 4: expose the host's ALSA card inventory via a
-  read-only /proc/asound bind mount. Docker commonly masks this path, which can
-  prevent detection of the TEAC UD-701N and other USB DACs even if /dev/snd is
-  mounted. Existing USB/ALSA permissions, host networking and writable music
-  library settings remain unchanged. Network device discovery is not changed.
+  Hotfix: removed the unsupported /proc/asound bind mount introduced in revision 4.
+  Docker/runc rejects mounts beneath /proc on the Umbrel host and would prevent
+  Infinity Core from starting. Retains host networking, ALSA and USB bus device
+  access, and the read/write music folder. USB DAC enumeration requires further
+  investigation and is not claimed fixed by this rollback.
