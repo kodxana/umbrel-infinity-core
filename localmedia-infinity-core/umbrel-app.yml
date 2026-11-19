@@ -30,7 +30,7 @@ environment:
 
 category: media
 name: Infinity Core (Beta)
-version: "14.0-beta12-umbrel.2"
+version: "14.0-beta12-umbrel.3"
 tagline: A high-fidelity music hub for your library and playback devices
 description: >-
   Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
@@ -39,6 +39,7 @@ description: >-
 
   This unofficial umbrelOS package uses the official Infinity Core beta Docker
   image. Host networking preserves device discovery on your local network.
+  ALSA sound devices and the USB bus are available for compatible peripherals.
   The music library is mounted read/write to support music sync and optional
   metadata editing. Configuration and library database are stored separately.
 
@@ -62,8 +63,7 @@ permissions:
   - STORAGE_DOWNLOADS
 
 releaseNotes: >-
-  Umbrel packaging revision 2: authentic official Infinity Core icon,
-  read/write music library for synchronization and tag changes, and native
-  umbrelOS 2.x folder selection. Host networking enables local Infinity Link,
-  AirPlay, Google Cast and UPnP discovery. This package does not include or
-  modify the upstream proprietary application.
+  Umbrel packaging revision 3: added host ALSA sound and USB bus passthrough,
+  including device cgroup permissions for hot-plugged USB DACs and compatible
+  peripherals. Keeps native read/write music folder selection, the original
+  developer icon and host networking. Full privileged mode is not enabled.
