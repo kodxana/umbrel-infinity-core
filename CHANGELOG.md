@@ -1,5 +1,12 @@
 # Changelog
 
+## 14.0-beta12-umbrel.5
+
+- **Hotfix:** removed unsupported `/proc/asound` bind mount from revision 4.
+- Restored compatibility with Docker/runc procfs mount-safety checks on Umbrel.
+- Retained USB and ALSA device-node access, host networking and music RW mounts.
+- DAC enumeration remains under investigation; no unverified runtime workaround applied.
+
 ## 14.0-beta12-umbrel.4
 
 - Exposed host ALSA inventory as a read-only `/proc/asound:/proc/asound:ro` bind mount.
