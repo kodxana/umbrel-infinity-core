@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <title>Roon Server · umbrelOS</title>
+  <style>
+    :root { color-scheme:dark; font-family:Inter,system-ui,-apple-system,BlinkMacSystemFont,"Segoe UI",sans-serif; background:#0a0d12;color:#edf1f7; }
+    * { box-sizing:border-box }
+    body { margin:0; min-height:100vh; background:radial-gradient(ellipse at 50% -15%,#273047 0,transparent 46%),#0a0d12 }
+    main { max-width:790px; padding:70px 24px 60px; margin:auto }
+    header { display:flex; gap:20px; align-items:center; margin-bottom:42px }
+    .brand { width:66px; height:66px; border:1px solid #394055; border-radius:18px; background:#191d27; display:grid; place-items:center }
+    .brand img {width:38px;height:38px;filter:invert(1)}
+    h1 {font-weight:650;font-size:2.1rem;letter-spacing:-.045em;margin:0}
+    .sub {color:#abb5c6;margin:7px 0 0;line-height:1.45}
+    .card {padding:28px 30px;border:1px solid #313846;border-radius:17px;background:#161b24;margin-bottom:18px}
+    h2 {font-size:1.1rem;font-weight:600;margin:0 0 12px}
+    p {line-height:1.65;color:#c1cbd9;margin:0 0 12px}
+    ol {padding-left:21px;color:#c1cbd9;line-height:1.9;margin:0}
+    li+li {margin-top:6px}
+    code {border:1px solid #394050;border-radius:6px;padding:2px 5px;background:#222938;color:#edf4ff}
+    .links {display:flex;gap:13px;flex-wrap:wrap;margin-top:22px}
+    a {text-decoration:none;color:#9fd0ff}
+    .action {display:inline-block;border-radius:10px;background:#f2f4f9;color:#151923;font-weight:600;padding:11px 16px}
+    .action.secondary {background:#2b3443;color:#e4edff}
+    small {color:#8f9baa;line-height:1.7}
+    footer {margin-top:26px}
+    @media(max-width:560px){main{padding:36px 17px}h1{font-size:1.75rem}header{gap:14px}.brand{width:56px;height:56px}.card{padding:22px}}
+  </style>
+</head>
+<body>
+<main>
+  <header>
+    <div class="brand"><img src="https://raw.githubusercontent.com/RoonLabs/roon-docker/main/configurator/public/roon-moon.svg" alt="Roon Labs"></div>
+    <div><h1>Roon Server</h1><p class="sub">Running on umbrelOS · Powered by Roon Labs</p></div>
+  </header>
+
+  <section class="card">
+    <h2>Control Roon with the Roon app</h2>
+    <p>Roon Server is a headless music engine. This is an installation information page, not the Roon music player. Use the Roon desktop or mobile app to configure and control your library.</p>
+    <ol>
+      <li>Install or open <strong>Roon</strong> on a PC, Mac, phone, or tablet on the same local network.</li>
+      <li>Choose the Roon Server running on your Umbrel machine and sign in.</li>
+      <li>In <strong>Settings → Storage</strong>, select the library folder <code>/Music</code>.</li>
+      <li>In <strong>Settings → Audio</strong>, enable your TEAC USB DAC or a discovered network output.</li>
+    </ol>
+    <div class="links">
+      <a class="action" href="https://roon.app/" rel="noopener noreferrer" target="_blank">Get the Roon app</a>
+      <a class="action secondary" href="https://help.roonlabs.com/" rel="noopener noreferrer" target="_blank">Roon support</a>
+    </div>
+  </section>
+  <section class="card">
+    <h2>Storage and backups</h2>
+    <p>Roon's database and software files are persisted at <code>/Roon</code>, with backups at <code>/RoonBackups</code>. Configure an automatic Roon backup in <strong>Settings → Backups</strong>.</p>
+    <p>The music folder selected in Umbrel is mounted read-only so Roon cannot modify the files used by Infinity Core. Drag-and-drop imports into that folder are not enabled.</p>
+  </section>
+  <section class="card">
+    <h2>Local DAC usage</h2>
+    <p>Roon Server and Infinity Core can both detect the TEAC UD-701N. They should not try to play through the same USB DAC simultaneously: stop playback in one application before selecting it in the other.</p>
+  </section>
+  <footer><small>Unofficial umbrelOS packaging. Roon Server and the Roon logo are products of Roon Labs. The service uses Roon Labs' official Docker image. A Roon subscription or trial is required.</small></footer>
+</main>
+</body>
+</html>
