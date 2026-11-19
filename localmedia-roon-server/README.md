@@ -1,93 +1,56 @@
 # Roon Server for umbrelOS
 
-This directory is a community integration, not a Roon Labs product or an
-official Umbrel app. It uses the vendor's official container:
+An **unofficial community integration** using Roon Labs' official Linux/AMD64 Docker image:
 `ghcr.io/roonlabs/roonserver:latest`.
 
-## Quick setup
+## Install and connect
 
-1. Install this app from the **Local Audio Apps** Community App Store.
-2. In Umbrel's native **Music Library** selector, choose the same folder used by
-   Infinity Core, e.g. the existing Umbrel Files **Music** folder.
-3. Roon Server starts on your Umbrel machine with host networking.
-4. Open the **Roon app** on Windows, macOS, iOS or Android, discover the Roon
-   Server on the LAN, sign in using your Roon account, then configure storage.
-5. Roon > Settings > Storage > add `/Music` if not already watched.
-6. Roon > Settings > Audio > enable **TEAC UD-701N** or another Roon-compatible
-   output. It must be idle in Infinity Core when Roon opens it for exclusive
-   USB playback.
+1. Install **Roon Server** from the Local Audio Apps store in Umbrel.
+2. In the Music Library folder picker, select the folder containing audio files.
+3. Open the official Roon app on a compatible computer, tablet or phone on the same LAN.
+4. Connect to the Roon Server, authenticate your Roon account and configure the server.
+5. Open **Settings → Storage** and ensure the selected folder `/Music` is being watched.
+6. Open **Settings → Audio** and enable a compatible local or network output.
 
-The Umbrel dashboard tile opens a tiny **information page**, not Roon Remote.
-Roon Server does not offer a native browser playback/management UI.
+The Umbrel app tile provides an **information page**, not a browser-based music interface. Roon Server itself is headless.
 
-## Layout
+## Storage
 
-| Container path | Role | Permissions |
+| Container path | Purpose | Access |
 | --- | --- | --- |
-| `/Roon` | Roon database, application files, logs | Read/write, persistent |
-| `/RoonBackups` | Backups configured in Roon's own settings | Read/write, persistent |
-| `/Music` | User-selected existing library | Read-only |
-| `/dev/snd` | Direct ALSA audio outputs | Read/write devices |
+| `/Roon` | Application data, identity, library database, application binaries | Persistent, read/write |
+| `/RoonBackups` | Backups configured in Roon Settings | Persistent, read/write |
+| `/Music` | Selected existing music library | Read-only |
+| `/dev/snd` | Linux ALSA playback devices | Device access |
 
-The Roon folders live under Umbrel app data and should be placed on SSD-backed
-storage. Note that **backups inside the same disk are not independent backups**;
-copy them to your NAS/another drive periodically.
+This package mounts music read-only to avoid unintentional modifications when sharing a library with another application. Roon's drag-and-drop imports into `/Music` therefore will not work unless the mount is explicitly made writable.
 
-## Networking
+Store Roon state on persistent storage. Set up scheduled backups and copy them to a different device or backup destination.
 
-The Roon service uses `network_mode: host` for SSDP/RAAT discovery and has no
-host port publishing. Keep PC/phone and Roon Server in the same LAN/VLAN.
-No reverse proxy should be placed between Roon Server and its discovery clients.
-The lightweight information page is served separately through Umbrel's app
-gateway (manifest port `8998`).
+## Networking and audio
 
-**Do not expose Roon Server's host service ports directly to the internet.**
+Roon needs `network_mode: host` for device discovery on the LAN. Remote control devices should be able to discover the server via local networking.
 
-## Local USB DAC
+Local ALSA playback uses `/dev/snd` and Linux device major 116. Docker typically masks `/proc/asound`; the integration uses `systempaths=unconfined` to expose the ALSA card inventory. This setting reduces the container's default isolation and should only be used on trusted systems.
 
-For the MINISFORUM's directly attached TEAC UD-701N, this package exposes the
-ALSA character devices and grants Linux device major 116. As with the tested
-Infinity Core configuration, `security_opt: systempaths=unconfined` removes
-Docker's default `/proc/asound` masking so ALSA can enumerate its cards.
-This option also broadens visibility of other protected system paths; it is a
-security tradeoff and should be used only on a trusted host.
+Do not expose Roon Server's listening ports directly to the internet. When multiple applications use the same exclusive hardware output, only one should play through it at a time.
 
-The TEAC USB DAC is a shared physical resource: Roon and Infinity Core cannot
-reliably stream to it at the same time. Stop playback in one before using the
-other. Other outputs (Roon Ready/RAAT, AirPlay, UPnP) may depend on device
-protocol support and network discovery.
+## Updates
 
-## Updating and logs
+Roon Server can update its application files independently of the Umbrel app integration version. The official container also supports the production and early-access branches via `ROON_INSTALL_BRANCH`; take a backup before changing branches.
 
-Roon Server updates its application binaries itself. The official Docker
-image can also be updated through the Umbrel app mechanism when its image tag
-changes, but the integration version `1.0.0` is **not the Roon build number**.
-
-```sh
-# Check containers
+```bash
 sudo docker ps --filter name=localmedia-roon-server
-
-# Read the official Roon image startup logs
 sudo docker logs --tail 100 localmedia-roon-server_roon_1
-
-# Confirm the active USB DAC card is available to the container
 sudo docker exec localmedia-roon-server_roon_1 cat /proc/asound/cards
 ```
 
-Full Roon Server application logs are inside its persistent data directory,
-generally under `/Roon/database/RoonServer/Logs/`.
+Application-specific log files are under `/Roon/database/RoonServer/Logs/` inside the persistent mount.
 
-## Important
+## Requirements and sources
 
-- Official container is **amd64 only**.
-- Roon requires a subscription or trial.
-- Roon's primary music folder is read-only here. Drag-and-drop imports to it
-  won't work; use Infinity Core's sync or another authorized file manager.
-- Do not run heavy Roon library analysis while Infinity Core is transferring
-  thousands of tracks from your DX340 if you want predictable I/O throughput.
-
-Sources:
-- https://github.com/RoonLabs/roon-docker
-- https://help.roonlabs.com/portal/en/kb/articles/roonserver-on-linux-with-docker
-- https://roonlabs.github.io/roon-docker/
-- Official logo: https://github.com/RoonLabs/roon-docker/blob/main/configurator/public/roon-moon.svg
+- Linux AMD64 host with Docker and Umbrel.
+- Roon subscription or trial.
+- [Official Roon Labs Docker image](https://github.com/RoonLabs/roon-docker)
+- [Official Docker setup guide](https://roonlabs.github.io/roon-docker/)
+- [Roon support](https://help.roonlabs.com/)
