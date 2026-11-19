@@ -17,7 +17,7 @@ services:
     network_mode: host
 
     environment:
-      TZ: Europe/Warsaw
+      TZ: Etc/UTC
       ROON_INSTALL_BRANCH: production
 
     volumes:
@@ -34,8 +34,8 @@ services:
     device_cgroup_rules:
       - 'c 116:* rwm'
 
-    # Same tested workaround as Infinity Core on this host: without it,
-    # Docker masks /proc/asound and ALSA may not enumerate the TEAC.
+    # Docker masks /proc/asound by default, which may prevent ALSA card
+    # enumeration when local audio devices are mounted.
     # CAUTION: this unmasking reduces the container's system-path isolation.
     # It is NOT privileged mode and does not mount the entire /dev or USB bus.
     security_opt:
