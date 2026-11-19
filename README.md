@@ -1,10 +1,35 @@
-# Infinity Core for umbrelOS
+# Local Audio Apps for umbrelOS
 
-**Unofficial Community App Store integration** for the official proprietary
-Infinity Core beta by Anantar Ultimate / tekChansin. This repository contains
-integration YAML only; it does not redistribute or modify Infinity Core.
+**Unofficial Community App Store integrations** for two proprietary music
+servers using their vendors' own official Docker images:
 
-## Features
+- **Infinity Core (Beta)** — Anantar Ultimate / tekChansin, with music
+  synchronization, Infinity Link and direct ALSA DAC playback.
+- **Roon Server** — Roon Labs, with a headless library engine, Roon Remote
+  control and RAAT / Roon Ready output support.
+
+The two applications are separate and can be installed independently.
+Both can access the same music files: Infinity Core has read/write access for
+sync, while Roon's mount defaults to read-only to protect the shared library.
+Neither application is redistributed or modified by this repository.
+
+## Available apps
+
+| App ID | Server image | Open from Umbrel |
+| --- | --- | --- |
+| `localmedia-infinity-core` | `ghcr.io/tekchansin/infinity-core:beta` | Infinity Core web UI :8930 |
+| `localmedia-roon-server` | `ghcr.io/roonlabs/roonserver:latest` | Informational page :8998; use Roon Remote to control |
+
+The Roon Server app uses its official [Docker image](https://github.com/RoonLabs/roon-docker)
+and authentic [Roon Labs icon](https://github.com/RoonLabs/roon-docker/blob/main/configurator/public/roon-moon.svg).
+It has an independent persistent database (`/Roon`) and backup directory
+(`/RoonBackups`) plus native read-only Music folder selection in Umbrel.
+The Umbrel tile opens a lightweight setup guide; Roon has no browser music UI.
+See [Roon Server setup instructions](localmedia-roon-server/README.md).
+
+## Infinity Core
+
+### Features
 
 - The **real Infinity Core project icon** is referenced directly from the
   developer's [official Home Assistant repository](https://github.com/tekchansin/Infinity-Homeassistant/blob/main/infinity_beta/icon.png).
