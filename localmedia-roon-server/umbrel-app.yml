@@ -59,7 +59,7 @@ developer: Roon Labs
 website: https://roon.app
 repo: https://github.com/RoonLabs/roon-docker
 support: https://help.roonlabs.com/
-submitter: Community (unofficial)
+submitter: Madiator
 port: 8998
 path: ""
 dependencies: []

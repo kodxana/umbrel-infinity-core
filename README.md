@@ -1,87 +1,54 @@
-# Local Audio Apps for umbrelOS
+# Madiator Audio Apps
 
-An **unofficial community app store** that provides Umbrel integrations for music servers using upstream-provided container images. The repository contains packaging and documentation, not proprietary application binaries.
+[![Validate store](https://github.com/kodxana/umbrel-infinity-core/actions/workflows/validate.yml/badge.svg)](https://github.com/kodxana/umbrel-infinity-core/actions/workflows/validate.yml)
+![Platform](https://img.shields.io/badge/platform-umbrelOS%202.x-555)
+![License](https://img.shields.io/badge/integrations-MIT-blue)
 
-## Available applications
+**Unofficial community app store for self-hosted audio. Maintained by Madiator.**
 
-| App | App ID | Upstream image | Interface |
+A curated collection of audio services, packaged for umbrelOS with predictable storage, original developer artwork and documented network access. This repository ships app definitions, not proprietary application binaries. Neither Umbrel nor the upstream vendors endorse these packages.
+
+## Available apps
+
+| App | Version in this store | Official upstream image | Music folder |
 | --- | --- | --- | --- |
-| Infinity Core (Beta) | `localmedia-infinity-core` | `ghcr.io/tekchansin/infinity-core:beta` | Web UI on port 8930 |
-| Roon Server | `localmedia-roon-server` | `ghcr.io/roonlabs/roonserver:latest` | Roon Remote; dashboard tile opens an information page |
+| **Infinity Core (Beta)** | **14.0-beta15-umbrel.10** | `ghcr.io/tekchansin/infinity-core:beta` | `/music` — read/write |
+| **Roon Server** | 1.0.1 (integration version) | `ghcr.io/roonlabs/roonserver:latest` | `/Music` — read-only |
 
-The apps install independently, each with its own persistent state. They can read the same music library when the appropriate storage folder is selected in Umbrel.
+Both apps have separate persistent databases. Roon's integration version is independent of the Roon application build.
 
 ## Installation
 
-1. Add this repository in **Umbrel → App Store → Community App Stores** using its GitHub repository URL.
-2. Open **Local Audio Apps** and install the desired application.
-3. Select a music folder from Umbrel's storage picker.
-4. Use the app-specific setup instructions below to finish configuration.
+1. In Umbrel, open **App Store → Community App Stores → Add**.
+2. Paste `https://github.com/kodxana/umbrel-infinity-core`.
+3. Open **Madiator Audio Apps**, then install the desired app.
+4. Pick an existing Music folder in Umbrel's native storage selector.
 
-## Infinity Core (Beta)
+**Compatibility:** the store ID remains `localmedia` and existing app IDs are unchanged. Do not rename IDs in an established store.
 
-**Upstream version:** 14.0-beta14 (2026-11-19). The device selector now
-supports **Edit list** to hide or restore unused local and network outputs.
-The currently playing output stays visible, and visibility choices are
-shared between clients connected to the same server.
+### Infinity Core
 
-- **Playback:** local ALSA sound devices, Infinity Link, and compatible network renderers.
-- **Network:** host networking for local device discovery.
-- **Music:** a selected music folder appears inside the container at `/music`, with **read/write** access for music transfers and optional metadata editing.
-- **Persistent state:** `/data`.
-- **Browser:** open `http://<server-ip>:8930` and use the pairing code supplied in the container logs.
-- **Timezone:** defaults to UTC in the published template; change `TZ` in Umbrel app settings for the deployment.
+Open `http://<server-address>:8930` on the local network and pair the browser with the code from the app logs. App configuration persists at `/data`; music is writable at `/music` to support synchronization and optional tag editing. Host networking supports Infinity Link, compatible network renderers and local ALSA/USB audio.
 
-### USB audio on Linux
+**Infinity Link:** mDNS/DNS-SD advertises `_infinitylink._tcp` using UDP 5353 multicast (224.0.0.251). Streaming peers use TCP 4720; Wi-Fi Transfer peers use TCP 8910. The Infinity Core LAN and browser interfaces use TCP 8931 and 8930 respectively. **Do not add Docker port mappings to the host-networked service.** See [Network reference](docs/NETWORKING.md) for service roles and firewall guidance.
 
-The package mounts `/dev/snd` and `/dev/bus/usb` and permits device character majors 116 (ALSA) and 189 (USB bus). Docker normally masks `/proc/asound`, so the Compose definition enables `security_opt: systempaths=unconfined` for audio device enumeration.
+Upstream [Infinity Core 14.0-beta15 release notes](https://github.com/tekchansin/Infinity-Homeassistant/blob/main/infinity_beta/CHANGELOG.md) cover improved large-screen layouts, Now Playing, and mobile navigation.
 
-**Security consideration:** this setting exposes additional system paths normally hidden from a container. It is broader than a default Docker container, although the app is not in privileged mode. Do not publish its service ports directly to the internet.
+### Roon Server
 
-Do **not** bind-mount `/proc/asound` directly onto `/proc/asound` inside the container: recent runc configurations reject such mounts.
+Roon Server is headless. Open the official Roon app on a desktop or mobile client to sign in and configure playback. The Umbrel tile opens a setup page, not a Roon music interface. Server data is retained under `/Roon`, backups at `/RoonBackups`. A Roon trial or subscription is required.
 
-### Update safely
+## Documentation
 
-Complete any active music transfers first, back up persistent app data, then use Umbrel's app update workflow. The moving `:beta` image may change independently from this integration's version. Verify installed application version from its startup logs.
+- [Networking and firewall reference](docs/NETWORKING.md)
+- [Operations, backup and security notes](docs/OPERATIONS.md)
+- [Contributing](CONTRIBUTING.md)
+- [Changelog](CHANGELOG.md)
 
-Official upstream documentation: [Infinity Core Docker instructions](https://github.com/tekchansin/Infinity-Homeassistant).
+**Safe defaults:** keep services on trusted local networks, keep independent library backups and avoid uploading personal configuration details to public issues.
 
-## Roon Server
+## Ownership and licensing
 
-- **Official container:** `ghcr.io/roonlabs/roonserver:latest` for AMD64/Linux.
-- **Network:** host networking required for Roon Remote and device discovery.
-- **Persistent state:** `/Roon`, including Roon database and downloaded application files.
-- **Backup destination:** `/RoonBackups`, configured in Roon settings.
-- **Music:** selectable folder mounted read-only at `/Music` to protect existing files.
-- **Playback:** compatible local ALSA devices or network outputs; an exclusive USB audio device should only be used by one playback application at a time.
-- **Management:** Roon Server is headless. Control it using the Roon app on a supported desktop or mobile device; the Umbrel dashboard tile displays setup instructions.
-- **Subscription:** Roon trial or subscription required.
+Maintained by **Madiator**. The [MIT license](LICENSE) covers original integration files and documentation only—not the proprietary Infinity Core or Roon applications. App icons reference original developer-supplied artwork.
 
-Roon's internal application version is distinct from the Umbrel integration version. Roon can update its installed binaries while retaining `/Roon`.
-
-Official upstream documentation: [Roon Labs Docker image](https://github.com/RoonLabs/roon-docker).
-
-## Storage and privacy
-
-No installation-specific hardware models, music-library details, local IP addresses, disk sizes, user profiles, or usernames belong in this repository. All examples are intended to be generic. Store deployment-specific settings in Umbrel app settings or local configuration, not in the public store.
-
-For music libraries with write-enabled syncing, maintain an independent backup. Backups kept on the same storage device as the application are not independent disaster recovery backups.
-
-## Troubleshooting
-
-```bash
-# List community app containers
-sudo docker ps --filter name=localmedia-
-
-# Inspect Infinity Core startup messages
-sudo docker logs --tail 100 localmedia-infinity-core_server_1
-
-# Inspect Roon container startup messages
-sudo docker logs --tail 100 localmedia-roon-server_roon_1
-```
-
-Roon's application logs are stored in the persistent `/Roon/database/RoonServer/Logs/` directory.
-
-## Acknowledgements
-
-This is an unofficial packaging project. Infinity Core is proprietary software developed by Anantar Ultimate, and Roon Server is proprietary software developed by Roon Labs. The application logos are referenced from the respective developers' public repositories; the container images are maintained by the upstream developers.
+Upstream: [Infinity Core](https://github.com/tekchansin/Infinity-Homeassistant) · [Roon Server](https://github.com/RoonLabs/roon-docker)

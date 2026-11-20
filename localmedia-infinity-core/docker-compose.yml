@@ -1,6 +1,11 @@
 # Infinity Core for umbrelOS (community integration)
 # Vendor Docker guide: https://github.com/tekchansin/Infinity-Homeassistant
 # Linux amd64 only. Host networking enables local device discovery.
+# Core serves TCP 8930 (web UI) and TCP 8931 (LAN client).
+# mDNS/DNS-SD: UDP 5353, 224.0.0.251, service _infinitylink._tcp.
+# Infinity Link peer streaming: TCP 4720; peer Wi-Fi Transfer: TCP 8910.
+# Those peer ports do not imply the Core server listens on both ports.
+# With network_mode: host, do not add Docker ports: mappings.
 
 services:
   server:

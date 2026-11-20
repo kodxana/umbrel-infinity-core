@@ -30,7 +30,7 @@ environment:
 
 category: media
 name: Infinity Core (Beta)
-version: "14.0-beta14-umbrel.9"
+version: "14.0-beta15-umbrel.10"
 tagline: A high-fidelity music hub for your library and playback devices
 description: >-
   Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
@@ -54,7 +54,7 @@ developer: Anantar Ultimate
 website: https://anantarultimate.com/infinity-core.html
 repo: https://github.com/tekchansin/Infinity-Homeassistant
 support: https://discord.gg/Z9T8VfshVs
-submitter: Community (unofficial)
+submitter: Madiator
 port: 8930
 path: ""
 dependencies: []
@@ -63,10 +63,11 @@ permissions:
   - STORAGE_DOWNLOADS
 
 releaseNotes: >-
-  Infinity Core 14.0-beta14 adds an Edit list option in the output device
-  selector. Users can hide and restore unused playback devices, with their
-  choices synchronized across clients connected to the same server; the
-  currently playing output cannot be hidden. The official image remains
-  ghcr.io/tekchansin/infinity-core:beta. No changes to the existing host
-  networking, USB/ALSA passthrough, database, or read/write music mounts.
-  Complete active transfers and back up persistent data before upgrading.
+  Infinity Core 14.0-beta15 introduces improved tablet and foldable layouts,
+  a persistent Now Playing panel on wide screens, refined album views and
+  navigation fixes. This unofficial Umbrel integration retains its existing
+  USB/ALSA device access, host networking, writable music folder and database
+  persistence. Infinity Link uses mDNS/DNS-SD; participating peers may use
+  TCP 4720 for streaming and TCP 8910 for Wi-Fi Transfer. For networking
+  details see docs/NETWORKING.md in the Madiator Audio Apps repository.
+  Complete active file transfers and back up application data before updating.
