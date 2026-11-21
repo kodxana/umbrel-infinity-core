@@ -1,5 +1,13 @@
 # Changelog
 
+## Infinity Core 14.0-beta16-umbrel.11 — 2026-11-21
+
+- Update the package version to match upstream **14.0-beta16**.
+- Document offline album, playlist and track downloads on Android; automatic Favorite and Smart Downloads (requires Infinity Core for Mobile beta13, with iPhone support planned).
+- Note Devices & Sharing improvements, tablet Now Playing changes, UPnP playback and radio fixes, and corrected Infinity Link skip behavior.
+- Preserve existing host networking, Infinity Link/mDNS port documentation, USB/ALSA configuration, data persistence and read/write music-folder permissions.
+- No changes to Roon Server or existing application and store IDs.
+
 ## Infinity Core 14.0-beta15-umbrel.10 — 2026-11-20
 
 - Follow the upstream Infinity Core **14.0-beta15** release for tablet/foldable layouts, Now Playing and navigation refinements.

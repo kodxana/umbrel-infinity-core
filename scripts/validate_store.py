@@ -55,7 +55,7 @@ for path in manifests:
 
     if pkg == "localmedia-infinity-core":
         svc = services.get("server", {})
-        if not str(app.get("version", "")).startswith("14.0-beta15-umbrel."):
+        if not str(app.get("version", "")).startswith("14.0-beta16-umbrel."):
             problems.append(f"{pkg}: outdated app version")
         if svc.get("image") != "ghcr.io/tekchansin/infinity-core:beta":
             problems.append(f"{pkg}: unexpected Docker image")

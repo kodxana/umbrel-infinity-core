@@ -12,7 +12,7 @@ A curated collection of audio services, packaged for umbrelOS with predictable s
 
 | App | Version in this store | Official upstream image | Music folder |
 | --- | --- | --- | --- |
-| **Infinity Core (Beta)** | **14.0-beta15-umbrel.10** | `ghcr.io/tekchansin/infinity-core:beta` | `/music` — read/write |
+| **Infinity Core (Beta)** | **14.0-beta16-umbrel.11** | `ghcr.io/tekchansin/infinity-core:beta` | `/music` — read/write |
 | **Roon Server** | 1.0.1 (integration version) | `ghcr.io/roonlabs/roonserver:latest` | `/Music` — read-only |
 
 Both apps have separate persistent databases. Roon's integration version is independent of the Roon application build.
@@ -32,7 +32,7 @@ Open `http://<server-address>:8930` on the local network and pair the browser wi
 
 **Infinity Link:** mDNS/DNS-SD advertises `_infinitylink._tcp` using UDP 5353 multicast (224.0.0.251). Streaming peers use TCP 4720; Wi-Fi Transfer peers use TCP 8910. The Infinity Core LAN and browser interfaces use TCP 8931 and 8930 respectively. **Do not add Docker port mappings to the host-networked service.** See [Network reference](docs/NETWORKING.md) for service roles and firewall guidance.
 
-Upstream [Infinity Core 14.0-beta15 release notes](https://github.com/tekchansin/Infinity-Homeassistant/blob/main/infinity_beta/CHANGELOG.md) cover improved large-screen layouts, Now Playing, and mobile navigation.
+Upstream [Infinity Core 14.0-beta16 release notes](https://github.com/tekchansin/Infinity-Homeassistant/blob/main/infinity_beta/CHANGELOG.md) cover **offline music downloads to Android phones**, automatic Favorite and Smart Downloads, Devices & Sharing improvements, and UPnP/Infinity Link playback fixes. Offline downloads require **Infinity Core for Mobile 14.0-beta13 on Android**; iPhone support is planned.
 
 ### Roon Server
 

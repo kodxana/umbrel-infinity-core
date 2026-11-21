@@ -30,7 +30,7 @@ environment:
 
 category: media
 name: Infinity Core (Beta)
-version: "14.0-beta15-umbrel.10"
+version: "14.0-beta16-umbrel.11"
 tagline: A high-fidelity music hub for your library and playback devices
 description: >-
   Infinity Core brings your personal music collection, Qobuz, TIDAL and internet
@@ -63,11 +63,12 @@ permissions:
   - STORAGE_DOWNLOADS
 
 releaseNotes: >-
-  Infinity Core 14.0-beta15 introduces improved tablet and foldable layouts,
-  a persistent Now Playing panel on wide screens, refined album views and
-  navigation fixes. This unofficial Umbrel integration retains its existing
-  USB/ALSA device access, host networking, writable music folder and database
-  persistence. Infinity Link uses mDNS/DNS-SD; participating peers may use
-  TCP 4720 for streaming and TCP 8910 for Wi-Fi Transfer. For networking
-  details see docs/NETWORKING.md in the Madiator Audio Apps repository.
-  Complete active file transfers and back up application data before updating.
+  Infinity Core 14.0-beta16 adds offline album, playlist and track downloads
+  to phones, automatic Favorite and Smart Downloads, and improved
+  Devices & Sharing settings. Offline phone downloads currently require
+  Infinity Core for Mobile 14.0-beta13 on Android; iPhone support is planned.
+  This update also improves UPnP track playback, radio handling and
+  Infinity Link skipping, and refines tablet Now Playing controls.
+  This unofficial Umbrel package preserves existing host-network discovery,
+  USB/ALSA access, persistent settings and writable music-folder sync.
+  Finish active transfers and back up your application data before updating.
